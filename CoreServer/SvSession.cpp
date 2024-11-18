@@ -19,10 +19,10 @@ void Net::SvSession::send(std::shared_ptr<Response> response)
   {
     http::async_write(
       m_socket, *response,
-      [this, response](beast::error_code ec, std::size_t) {
+      [self = shared_from_this(), response](beast::error_code ec, std::size_t) {
       if (ec)
       {
-        disconect();
+        self->disconect();
       }
     });
   }
@@ -36,7 +36,7 @@ bool Net::SvSession::isConnect() const
 void Net::SvSession::disconect()
 {
   if (isConnect())
-    asio::post(*m_asioContext, [this]() { m_socket.close(); });
+    asio::post(*m_asioContext, [self = shared_from_this()]() { self->m_socket.close(); });
 }
 
 void Net::SvSession::listen()
@@ -51,20 +51,20 @@ void Net::SvSession::read_request()
   std::shared_ptr<Request> request_ = std::make_shared<Request>();
   http::async_read(
     m_socket, buffer_, *request_,
-    [this, request_](beast::error_code ec, std::size_t a_size) {
+    [self = shared_from_this(), request_](beast::error_code ec, std::size_t a_size) {
     if (!ec) {
       try
       {
-        transact_queue* pair_accept = new transact_queue(shared_from_this(), request_);
+        transact_queue* pair_accept = new transact_queue(self, request_);
 
-        while (!m_queue->push(pair_accept));
+        while (!self->m_queue->push(pair_accept));
       }
       catch (const std::exception& err)
       {
 
       }
     }
-    listen();
+    self->listen();
   });
 }
 

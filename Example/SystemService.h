@@ -2,19 +2,18 @@
 #include "Router.h"
 #include "SvSession.h"
 #include "SystemInfo.h"
+#include "boost/thread.hpp"
 
 using namespace Net;
 using namespace Routing;
 
-class SystemService
+class SystemService : public std::enable_shared_from_this<SystemService>
 {
 public:
   SystemService() = default;
 
-public:
-  void operator()(const std::shared_ptr<Session>& session,
-    const std::shared_ptr<Request>& request,
-    const std::shared_ptr<RoutHandle>& handle)
+private:
+  std::string GetSystemInfo()
   {
     const SystemInfo::Info systemInfo = m_sysInfo->get_system_usage();
 
@@ -23,14 +22,28 @@ public:
       << "; Memory Usage: " << systemInfo.memoryUsage << " MB"
       << "; Disk Usage:" << systemInfo.diskUsage;
 
-    std::shared_ptr<Response> response = std::make_shared<Response>(
-      http::status::ok, request->version());
-    response->set(http::field::server, "Boost.Beast Server");
-    response->set(http::field::content_type, "text/plain");
-    response->body() = systemInfoStream.str();
-    response->prepare_payload();
+    return systemInfoStream.str();
+  }
 
-    session->send(response);
+public:
+  void operator()(const std::shared_ptr<Session>& session,
+    const std::shared_ptr<Request>& request,
+    const std::shared_ptr<RoutHandle>& handle)
+  {
+
+    boost::thread([session, request, this]()
+    {
+      std::string sysinfo = GetSystemInfo();
+
+      std::shared_ptr<Response> response = std::make_shared<Response>(
+        http::status::ok, request->version());
+      response->set(http::field::server, "Boost.Beast Server");
+      response->set(http::field::content_type, "text/plain");
+      response->body() = sysinfo;
+      response->prepare_payload();
+
+      session->send(response);
+    }).detach();
   }
 
 private:

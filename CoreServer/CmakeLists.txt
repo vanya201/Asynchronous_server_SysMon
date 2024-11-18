@@ -26,6 +26,6 @@ target_link_libraries(CoreServer PUBLIC Boost::system
                                          Boost::thread
                                          Boost::serialization
                                          Boost::lockfree
-					 Boost::beast)
+                                         Boost::beast)
 
 target_include_directories(CoreServer PUBLIC ${Boost_INCLUDE_DIR})
