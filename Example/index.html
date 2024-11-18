@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Системна інформація</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 15px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+    }
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #f8f9fa;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .info {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .info div {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s, background-color 0.3s;
+    }
+    .info div:hover {
+      transform: scale(1.05);
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+    .info span {
+      display: block;
+      font-size: 1.2rem;
+      color: #f0f0f0;
+      font-weight: 400;
+    }
+    .info .value {
+      font-weight: bold;
+      font-size: 1.4rem;
+      color: #f39c12; /* Bright yellow-orange for values */
+    }
+    .info div span {
+      color: #f0f0f0;
+      font-size: 1.1rem;
+    }
+    /* Анимация для текстовых элементов */
+    .value {
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Системна інформація</h1>
+    <div class="info">
+      <div>
+        <span>Завантаження процесора</span>
+        <span id="cpuUsage" class="value">Почекайте...</span>
+      </div>
+      <div>
+        <span>Оперативна пам'ять</span>
+        <span id="memoryUsage" class="value">Почекайте...</span>
+      </div>
+      <div>
+        <span>Доступно на диску</span>
+        <span id="diskUsage" class="value">Почекайте...</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function fetchSystemInfo() {
+      fetch('http://127.0.0.1:8080/systeminfo')
+        .then(response => response.text())  
+        .then(data => {
+          const parts = data.split(';');
+          document.getElementById('cpuUsage').textContent = parts[0];
+          document.getElementById('memoryUsage').textContent = parts[1];
+          document.getElementById('diskUsage').textContent = parts[2];
+        })
+        .catch(error => {
+          console.error('Ошибка:', error);
+        });
+    }
+
+    fetchSystemInfo();
+    setInterval(fetchSystemInfo, 2000);
+  </script>
+</body>
+</html>
