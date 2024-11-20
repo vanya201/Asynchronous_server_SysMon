@@ -31,9 +31,9 @@ public:
     const std::shared_ptr<RoutHandle>& handle)
   {
 
-    boost::thread([session, request, this]()
+    boost::thread([session, request, self = shared_from_this()]()
     {
-      std::string sysinfo = GetSystemInfo();
+      std::string sysinfo = self->GetSystemInfo();
 
       std::shared_ptr<Response> response = std::make_shared<Response>(
         http::status::ok, request->version());

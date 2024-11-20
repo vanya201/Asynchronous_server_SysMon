@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.24)
 project(CoreServer)
 
-
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -24,7 +23,6 @@ add_library(CoreServer STATIC ${SOURCES})
 
 target_link_libraries(CoreServer PUBLIC Boost::system
                                          Boost::thread
-                                         Boost::serialization
                                          Boost::lockfree
                                          Boost::beast)
 

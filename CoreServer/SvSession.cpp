@@ -53,16 +53,8 @@ void Net::SvSession::read_request()
     m_socket, buffer_, *request_,
     [self = shared_from_this(), request_](beast::error_code ec, std::size_t a_size) {
     if (!ec) {
-      try
-      {
         transact_queue* pair_accept = new transact_queue(self, request_);
-
         while (!self->m_queue->push(pair_accept));
-      }
-      catch (const std::exception& err)
-      {
-
-      }
     }
     self->listen();
   });

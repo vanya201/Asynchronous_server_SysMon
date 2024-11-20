@@ -66,7 +66,7 @@ void Net::SvServer::runtime()
         }
         catch(const std::runtime_error& err)
         {
-
+          //TODO
         }
 
         delete pair_accepted;

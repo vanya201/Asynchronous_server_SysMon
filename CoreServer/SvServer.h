@@ -26,13 +26,6 @@ namespace Net
 
 
 
-    template<uint64_t in_speed>
-    constexpr uint64_t calculate_time_seconds_clear() {
-      return in_speed / 60 * 60;
-    }
-
-
-
     class SERVER_COMPONENT SvServer : public Server
     {
     public:
@@ -62,6 +55,13 @@ namespace Net
 
       std::list<std::shared_ptr<Session>> sessions;
       const uint64_t time_seconds_clear = calculate_time_seconds_clear<100000>();
+
+
+      template<uint64_t in_speed>
+      constexpr uint64_t calculate_time_seconds_clear() {
+        return in_speed / 60 * 60;
+      }
+
     };
 
 
