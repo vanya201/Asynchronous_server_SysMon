@@ -7,12 +7,12 @@
 using namespace Net;
 using namespace Routing;
 
-class SystemService : public std::enable_shared_from_this<SystemService>
+class SystemService
 {
 public:
   SystemService() = default;
 
-private:
+public:
   std::string GetSystemInfo()
   {
     const SystemInfo::Info systemInfo = m_sysInfo->get_system_usage();
@@ -31,9 +31,9 @@ public:
     const std::shared_ptr<RoutHandle>& handle)
   {
 
-    boost::thread([session, request, self = shared_from_this()]()
+    boost::thread([session, request, this]()
     {
-      std::string sysinfo = self->GetSystemInfo();
+      std::string sysinfo = GetSystemInfo();
 
       std::shared_ptr<Response> response = std::make_shared<Response>(
         http::status::ok, request->version());
