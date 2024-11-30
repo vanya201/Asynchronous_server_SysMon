@@ -30,9 +30,6 @@ public:
     const std::shared_ptr<Request>& request,
     const std::shared_ptr<RoutHandle>& handle)
   {
-
-    boost::thread([session, request, this]()
-    {
       std::string sysinfo = GetSystemInfo();
 
       std::shared_ptr<Response> response = std::make_shared<Response>(
@@ -43,7 +40,6 @@ public:
       response->prepare_payload();
 
       session->send(response);
-    }).detach();
   }
 
 private:
