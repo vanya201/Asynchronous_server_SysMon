@@ -18,9 +18,9 @@ public:
     const SystemInfo::Info systemInfo = m_sysInfo->get_system_usage();
 
     std::ostringstream systemInfoStream;
-    systemInfoStream << "CPU Usage: " << systemInfo.cpuUsage << "%"
-      << "; Memory Usage: " << systemInfo.memoryUsage << " MB"
-      << "; Disk Usage:" << systemInfo.diskUsage;
+    systemInfoStream << systemInfo.cpuUsage << "%"
+      << ";" << systemInfo.memoryUsage << " MB"
+      << ";" << systemInfo.diskUsage;
 
     return systemInfoStream.str();
   }
@@ -36,6 +36,8 @@ public:
         http::status::ok, request->version());
       response->set(http::field::server, "Boost.Beast Server");
       response->set(http::field::content_type, "text/plain");
+      response->set(http::field::access_control_allow_origin, "*");
+
       response->body() = sysinfo;
       response->prepare_payload();
 
